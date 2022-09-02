@@ -1,0 +1,4 @@
+.gitconfig  ${HOME}/.gitconfig
+.bashrc  ${HOME}/.bashrc
+.vimrc  ${HOME}/.vimrc
+.zshrc  ${HOME}/.zshrc
