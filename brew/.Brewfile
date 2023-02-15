@@ -58,12 +58,11 @@ cask "font-hack-nerd-font"
 ## mas
 ##
 if OS.mac?  # macの時のみ実行。(linux[wsl]で使う可能性があるため)
-  mas "LINE", id: 539883307
-  mas "Microsoft Excel", id: 462058435
+  mas "LINE",                 id: 539883307
+  mas "Microsoft Excel",      id: 462058435
   mas "Microsoft PowerPoint", id: 462062816
-  mas "Microsoft Word", id: 462054704
-  mas "RunCat", id: 1429033973
-  mas "Skitch", id: 425955336
-  mas "Twitter", id: 1482454543
-  mas "Xcode", id: 497799835
+  mas "Microsoft Word",       id: 462054704
+  mas "RunCat",               id: 1429033973
+  mas "Skitch",               id: 425955336
+  mas "Twitter",              id: 1482454543
 end
