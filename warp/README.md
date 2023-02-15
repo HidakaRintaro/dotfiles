@@ -1,6 +1,7 @@
 # Warp
 設定ファイル類があるわけではないが、設定ファイルがどこにあるかわからないためフォントや文字サイズなどを記載。  
-`workflows`, `launch_configurations`のファイルを用意する場合は`.warp`ファイルを作成しシンボリックリンクを作成する。
+> **Note**
+> `workflows`, `launch_configurations`のファイルを用意する場合は`.warp`ファイルを作成しシンボリックリンクを作成する
 
 ## 公式
 https://www.warp.dev/
