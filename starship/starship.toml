@@ -7,6 +7,11 @@ format = """$env_var $all"""  # Add custom formatting before other stuff
 success_symbol = ""
 error_symbol = ""
 
+[directory]
+read_only = " "
+truncation_length = 5
+truncation_symbol = "…/"
+
 # Shows an icon depending on what distro it is running on
 [env_var.STARSHIP_DISTRO]
 format = '[$env_value](bold white) |'
@@ -27,9 +32,6 @@ symbol = " "
 
 [dart]
 symbol = " "
-
-[directory]
-read_only = " "
 
 [docker_context]
 symbol = " "
