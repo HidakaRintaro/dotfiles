@@ -2,6 +2,9 @@
 Starshipがどのような構成になっているのかを記録するためのもので、dotfilesのセットアップで下記の内容は自動でセットアップされます。  
 そのため下記の内容を手動でセットアップする必要はありません。
 
+## 公式
+https://starship.rs/
+
 ## シンボリックリンク
 ```bash
 ln -fsv $HOME/dotfiles/starship/starship.toml $HOME/.starship/starship.toml
