@@ -1,12 +1,16 @@
+[user]
+	name  = HidakaRintaro
+	email = 53255166+HidakaRintaro@users.noreply.github.com
+
 [alias]
-	cm = commit
-	st = status
-	gr = log --graph --date=short --decorate=short --pretty=format:'%Cgreen%h %Creset%cd %Cblue%cn %Cred%d %Creset%s'
-	co = checkout
-	sw = switch
 	b = branch
 	bnm = branch --no-merged
-
-[user]
-	name = HidakaRintaro
-	email = 53255166+HidakaRintaro@users.noreply.github.com
+	cm = commit
+	co = checkout
+  ft  = fetch
+  ftp = fetch --prune
+	gr = log --graph --date=short --decorate=short --pretty=format:'%Cgreen%h %Creset%cd %Cblue%cn %Cred%d %Creset%s'
+	po = push origin
+	puo = push -u origin
+	st = status
+	sw = switch
