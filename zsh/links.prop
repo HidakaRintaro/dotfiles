@@ -1,0 +1,2 @@
+$DOTFILES/zsh/env.zsh=$HOME/.zshenv
+$DOTFILES/zsh/rc.zsh=$HOME/.zshrc
