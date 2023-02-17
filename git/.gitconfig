@@ -10,6 +10,7 @@
   ft  = fetch
   ftp = fetch --prune
 	gr = log --graph --date=short --decorate=short --pretty=format:'%Cgreen%h %Creset%cd %Cblue%cn %Cred%d %Creset%s'
+	p = push
 	po = push origin
 	puo = push -u origin
 	st = status
