@@ -15,7 +15,7 @@ echo '===================================================== https://github.com/H
 
 export DOTFILES="$HOME/dotfiles"
 
-source ./print.sh
+source ./install/print.sh
 
 has() {
     type "$1" > /dev/null 2>&1
