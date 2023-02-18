@@ -15,7 +15,7 @@ echo '===================================================== https://github.com/H
 
 export DOTFILES="$HOME/dotfiles"
 
-source $DOTFILES/install/print.sh
+source ./print.sh
 
 has() {
     type "$1" > /dev/null 2>&1
@@ -25,6 +25,8 @@ cd $HOME
 if [[ ! -d $DOTFILES ]]; then
     if has "git"; then
         git clone https://github.com/HidakaRintaro/dotfiles.git $DOTFILES
+        # change access method to ssh
+        git remote set-url origin git@github.com:HidakaRintaro/dotfiles.git
     elif has "curl" || has "wget"; then
         TARBALL="https://github.com/HidakaRintaro/dotfiles/archive/refs/heads/main.tar.gz"
         if has "curl"; then
@@ -40,7 +42,7 @@ if [[ ! -d $DOTFILES ]]; then
     fi
 
     cd $DOTFILES
-    $DOTFILES/install/links.sh
+    ./install/links.sh
 else
     fail "dotfiles already exists"
 fi
