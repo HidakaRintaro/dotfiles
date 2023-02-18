@@ -45,8 +45,6 @@ else
     fail "dotfiles already exists"
 fi
 
-$DOTFILES/install/links.sh
-
 # Xcodeのインストール
 # xcode-select --install
 
