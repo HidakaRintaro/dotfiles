@@ -15,7 +15,8 @@ echo '===================================================== https://github.com/H
 
 export DOTFILES="$HOME/dotfiles"
 
-source ./install/print.sh
+# I don't know how to load it when I run it in curl
+# source ./install/print.sh
 
 has() {
     type "$1" > /dev/null 2>&1
@@ -24,6 +25,7 @@ has() {
 cd $HOME
 if [[ ! -d $DOTFILES ]]; then
     if has "git"; then
+        printf "\r[\033[00;34mINFO\033[0m] Downloading using git\n"
         git clone https://github.com/HidakaRintaro/dotfiles.git $DOTFILES
 
         # change access method to ssh
@@ -32,21 +34,30 @@ if [[ ! -d $DOTFILES ]]; then
     elif has "curl" || has "wget"; then
         TARBALL="https://github.com/HidakaRintaro/dotfiles/archive/refs/heads/main.tar.gz"
         if has "curl"; then
+            printf "\r[\033[00;34mINFO\033[0m] Downloading using curl\n"
             curl -L ${TARBALL} -o main.tar.gz
         else
+            printf "\r[\033[00;34mINFO\033[0m] Downloading using wget\n"
             wget ${TARBALL}
         fi
         tar -zxvf main.tar.gz
         rm -f main.tar.gz
         mv -f dotfiles-main "$DOTFILES/dotfiles"
     else
-        fail "curl or wget or git required"
+        printf "\r\033[2K  [\033[0;31mFAIL\033[0m] curl or wget or git required\n"
+        echo ''
+        exit
     fi
+
+    source $DOTFILES/install/print.sh
+    success "dotfiles downloaded!"
 
     cd $DOTFILES
     ./install/links.sh
 else
-    fail "dotfiles already exists"
+    printf "\r\033[2K  [\033[0;31mFAIL\033[0m] dotfiles already exists\n"
+    echo ''
+    exit
 fi
 
 # Xcodeのインストール
