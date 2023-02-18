@@ -11,25 +11,17 @@ echo ' /  /_/  / /  /  /_/  / /    /  /_/      _/  / /   _/  / /  _/  / /  /  /_
 echo '/_______/ /  /_______/ /    /_____/|    /___/ /   /___/ /  /___/ /   |\________/| /______ / /  '
 echo '|_______|/   |_______|/     |______/    |____/    |____/   |___|/    \_________|/ |______ |/   '
 echo '                                                                                               '
-echo '===================================================== https://github.com/hidakarintaro/dotfiles'
+echo '===================================================== https://github.com/HidakaRintaro/dotfiles'
 
 export DOTFILES="$HOME/dotfiles"
 
-./links.sh
-
-
-# Xcodeのインストール
-# xcode-select --install
-
-# homebrewのインストール
-# /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-
-# ここにAppleにログインしたか確認のメッセを出す
+source $DOTFILES/install/print.sh
 
 has() {
     type "$1" > /dev/null 2>&1
 }
 
+cd $HOME
 if [[ ! -d $DOTFILES ]]; then
     if has "git"; then
         git clone https://github.com/HidakaRintaro/dotfiles.git $DOTFILES
@@ -44,23 +36,21 @@ if [[ ! -d $DOTFILES ]]; then
         rm -f main.tar.gz
         mv -f dotfiles-main "$DOTFILES/dotfiles"
     else
-        echo "curl or wget or git required"
-        exit 1
+        fail "curl or wget or git required"
     fi
 
-    cd ${DOT_DIR}
-    for f in *;
-    do
-        [[ "$f" == ".git" ]] && continue
-        [[ "$f" == ".gitignore" ]] && continue
-        [[ "$f" == ".DS_Store" ]] && continue
-        [[ "$f" == "README.md" ]] && continue
-        [[ "$f" == "install.sh" ]] && continue
-
-        ln -snf $DOT_DIR/"$f" $HOME/".$f"
-        echo "Installed .$f"
-    done
+    cd $DOTFILES
+    $DOTFILES/install/links.sh
 else
-    echo "dotfiles already exists"
-    exit 1
+    fail "dotfiles already exists"
 fi
+
+$DOTFILES/install/links.sh
+
+# Xcodeのインストール
+# xcode-select --install
+
+# homebrewのインストール
+# /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+# ここにAppleにログインしたか確認のメッセを出す

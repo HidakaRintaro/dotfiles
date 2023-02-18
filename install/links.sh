@@ -4,23 +4,7 @@ set -ue
 
 echo ''
 
-info () {
-  printf "\r[\033[00;34mINFO\033[0m] $1\n"
-}
-
-user () {
-  printf "\r  [ \033[0;33m??\033[0m ] $1\n"
-}
-
-success () {
-  printf "\r\033[2K  [ \033[00;32mOK\033[0m ] $1\n"
-}
-
-fail () {
-  printf "\r\033[2K  [\033[0;31mFAIL\033[0m] $1\n"
-  echo ''
-  exit
-}
+source $DOTFILES/install/print.sh
 
 link_file () {
   local src=$1 dst=$2
@@ -38,7 +22,7 @@ link_file () {
 
       local currentSrc="$(readlink $dst)"
 
-      if [[ $currentSrc == $src ]]
+      if [[ $currentSrc == $src ]] # has the symbolic link changed?
       then
 
         skip=true;
