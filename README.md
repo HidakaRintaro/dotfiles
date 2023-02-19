@@ -10,6 +10,7 @@
 |_______|/   |_______|/     |______/    |____/    |____/   |___|/    \_________|/ |______ |/   
 ```
 
+## Install
 ```bash
-bash -c "$(curl -fsSL https://dotfiles.rintaro.dev)"
+/bin/bash -c "$(curl -fsSL https://dotfiles.rintaro.dev)"
 ```
