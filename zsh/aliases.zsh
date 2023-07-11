@@ -13,4 +13,11 @@ alias egrep='egrep --color=auto'
 alias c='clear'
 alias mkdir='mkdir -p'
 
+alias sed='gsed'
+alias make='gmake'
+
 alias -g C='| pbcopy'
+
+idea() {
+    open -na "IntelliJ IDEA.app" --args nosplash "$@"
+}
