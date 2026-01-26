@@ -1,17 +1,24 @@
 [user]
 	name  = HidakaRintaro
 	email = 53255166+HidakaRintaro@users.noreply.github.com
+	signingkey = 38B20DFB72BB2BF0
 
 [alias]
 	b   = branch
 	bnm = branch --no-merged
+	bmd = delete-merged-branches
+	bsd = delete-squashed-branches
+	bd  = "!git bmd && git bsd"
 	cm  = commit
 	co  = checkout
-  	ft  = fetch
-  	ftp = fetch --prune
+	ft  = fetch
+	ftp = fetch --prune
 	gr  = log --graph --date=short --decorate=short --pretty=format:'%Cgreen%h %Creset%cd %Cblue%cn %Cred%d %Creset%s'
 	p   = push
 	po  = push origin
 	puo = push -u origin
 	st  = status
 	sw  = switch
+
+[commit]
+	gpgsign = true

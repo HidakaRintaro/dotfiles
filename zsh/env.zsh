@@ -8,3 +8,6 @@ export STARSHIP_CACHE="$HOME/.starship/cache"
 
 # Go
 export PATH="$HOME/go/bin:$PATH"
+
+# gpg
+export GPG_TTY=\$(tty)

@@ -8,7 +8,7 @@ success_symbol = ""
 error_symbol = ""
 
 [directory]
-read_only = " "
+read_only = " 󰌾"
 truncation_length = 5
 truncation_symbol = "…/"
 
@@ -19,16 +19,13 @@ variable = "STARSHIP_DISTRO"
 disabled = false
 
 [aws]
-symbol = "  "
+symbol = "󰸏 "
 
-[buf]
-symbol = " "
+[bun]
+symbol = " "
 
 [c]
 symbol = " "
-
-[conda]
-symbol = " "
 
 [dart]
 symbol = " "
@@ -39,23 +36,20 @@ symbol = " "
 [elixir]
 symbol = " "
 
-[elm]
-symbol = " "
+[gcloud]
+symbol = "󱇶 "
 
 [git_branch]
 symbol = " "
 
+[git_commit]
+tag_symbol = '  '
+
 [golang]
 symbol = " "
 
-[guix_shell]
-symbol = " "
-
 [haskell]
 symbol = " "
-
-[haxe]
-symbol = "⌘ "
 
 [hg_branch]
 symbol = " "
@@ -63,44 +57,40 @@ symbol = " "
 [java]
 symbol = " "
 
-[julia]
-symbol = " "
-
-[lua]
-symbol = " "
+[kotlin]
+symbol = " "
 
 [memory_usage]
-symbol = " "
-
-[meson]
-symbol = "喝 "
-
-[nim]
-symbol = " "
-
-[nix_shell]
-symbol = " "
+symbol = "󰍛 "
 
 [nodejs]
 symbol = " "
 
 [package]
-symbol = " "
+symbol = "󰏗 "
+
+[perl]
+symbol = " "
+
+[php]
+symbol = " "
 
 [python]
 symbol = " "
-
-[rlang]
-symbol = "ﳒ "
 
 [ruby]
 symbol = " "
 
 [rust]
-symbol = " "
+symbol = "󱘗 "
 
 [scala]
 symbol = " "
 
-[spack]
-symbol = "🅢 "
+[swift]
+symbol = " "
+
+[os.symbols]
+Linux = " "
+Macos = " "
+Windows = "󰍲 "

@@ -14,7 +14,6 @@ alias c='clear'
 alias mkdir='mkdir -p'
 
 alias sed='gsed'
-alias make='gmake'
 
 alias -g C='| pbcopy'
 
