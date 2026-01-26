@@ -89,8 +89,3 @@ symbol = " "
 
 [swift]
 symbol = " "
-
-[os.symbols]
-Linux = " "
-Macos = " "
-Windows = "󰍲 "

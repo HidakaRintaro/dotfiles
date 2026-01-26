@@ -10,4 +10,4 @@ export STARSHIP_CACHE="$HOME/.starship/cache"
 export PATH="$HOME/go/bin:$PATH"
 
 # gpg
-export GPG_TTY=\$(tty)
+export GPG_TTY=$(tty)

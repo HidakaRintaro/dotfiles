@@ -9,7 +9,7 @@ export PATH="/opt/homebrew/opt/make/libexec/gnubin:$PATH"
 # sed (gsed)
 export PATH="/opt/homebrew/opt/gnu-sed/libexec/gnubin:$PATH"
 
-# curl (gcurl) 
+# curl (gcurl)
 export PATH="/opt/homebrew/opt/curl/bin:$PATH"
 
 # grep (ggrep)
