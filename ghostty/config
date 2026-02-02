@@ -1,0 +1,22 @@
+# Theme Settings
+theme = "Dark Modern"
+
+# Font Settings
+font-family = "Hack Nerd Font" 
+font-feature = "-calt"
+font-feature = "-dlig"
+font-feature = "-liga"
+font-size = 14
+
+background-opacity = 0.7
+
+macos-titlebar-proxy-icon = "hidden"
+
+quick-terminal-position = "top"
+quick-terminal-screen = "main"
+quick-terminal-animation-duration = 0.1
+quick-terminal-size = "100%, 100%"
+
+keybind = "global:alt+space=toggle_quick_terminal"
+
+window-inherit-working-directory = true
