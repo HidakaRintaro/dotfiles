@@ -16,3 +16,6 @@ zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'  # 小文字でも大文字�
 
 # Claude
 export PATH="$HOME/.claude/local:$PATH"
+
+# pnpmの使用を許可
+export VOLTA_FEATURE_PNPM=1
