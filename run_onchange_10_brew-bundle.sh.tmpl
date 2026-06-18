@@ -1,0 +1,21 @@
+{{ if eq .chezmoi.os "darwin" -}}
+#!/bin/sh
+set -eu
+
+# dot_Brewfile checksum: {{ include "dot_Brewfile" | sha256sum }}
+
+if ! command -v brew >/dev/null 2>&1; then
+  if [ -x /opt/homebrew/bin/brew ]; then
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+  elif [ -x /usr/local/bin/brew ]; then
+    eval "$(/usr/local/bin/brew shellenv)"
+  fi
+fi
+
+if ! command -v brew >/dev/null 2>&1; then
+  echo "Homebrewがインストールされていないため、brew bundleを実行できません。" >&2
+  exit 1
+fi
+
+brew bundle --file={{ joinPath .chezmoi.sourceDir "dot_Brewfile" | quote }}
+{{ end -}}

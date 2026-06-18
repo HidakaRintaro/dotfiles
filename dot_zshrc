@@ -4,9 +4,9 @@ source_if_exists () {
   fi
 }
 
-source_if_exists $HOME/dotfiles/zsh/homebrew.zsh
-source_if_exists $HOME/dotfiles/zsh/aliases.zsh
-source_if_exists $HOME/dotfiles/zsh/starship.zsh
+source_if_exists $HOME/.config/zsh/homebrew.zsh
+source_if_exists $HOME/.config/zsh/aliases.zsh
+source_if_exists $HOME/.config/zsh/starship.zsh
 
 # Load Starship
 eval "$(starship init zsh)"

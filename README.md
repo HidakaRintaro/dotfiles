@@ -12,5 +12,5 @@
 
 ## Install
 ```bash
-/bin/bash -c "$(curl -fsSL https://dotfiles.rintaro.dev)"
+sh -c "$(curl -fsLS https://get.chezmoi.io)" -- init --apply https://github.com/HidakaRintaro/dotfiles.git 
 ```
