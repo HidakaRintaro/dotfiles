@@ -1,0 +1,13 @@
+[tools]
+go = "1.26"
+node = "24"
+npm = "11.4.1"
+php = "latest"
+pnpm = "latest"
+yarn = "1"
+
+[settings]
+idiomatic_version_file_enable_tools = ["go", "node", "npm", "php", "pnpm", "yarn"]
+
+[plugins]
+php = "vfox:mise-plugins/vfox-php"

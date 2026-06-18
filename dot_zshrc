@@ -17,5 +17,9 @@ zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'  # 小文字でも大文字�
 # Claude
 export PATH="$HOME/.claude/local:$PATH"
 
-# pnpmの使用を許可
-export VOLTA_FEATURE_PNPM=1
+# Load mise
+if command -v mise >/dev/null 2>&1; then
+  eval "$(mise activate zsh)"
+elif [[ -x "$HOME/.local/bin/mise" ]]; then
+  eval "$("$HOME/.local/bin/mise" activate zsh)"
+fi

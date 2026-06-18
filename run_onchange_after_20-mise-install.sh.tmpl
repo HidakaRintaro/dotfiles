@@ -1,0 +1,18 @@
+#!/bin/sh
+set -eu
+
+# mise config checksum: {{ include "dot_config/mise/config.toml" | sha256sum }}
+
+if command -v mise >/dev/null 2>&1; then
+  MISE=mise
+elif [ -x "$HOME/.local/bin/mise" ]; then
+  MISE="$HOME/.local/bin/mise"
+else
+  echo "miseがインストールされていないため、mise管理ツールのインストールをスキップします。"
+  exit 0
+fi
+
+echo "miseで管理するツールをインストールしています..."
+"$MISE" trust "$HOME/.config/mise/config.toml"
+"$MISE" install --yes
+echo "miseで管理するツールのインストールが完了しました。"
