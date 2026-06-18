@@ -5,11 +5,6 @@ Starshipがどのような構成になっているのかを記録するための
 ## 公式
 https://starship.rs/
 
-## シンボリックリンク
-```bash
-ln -fsv $HOME/dotfiles/starship/starship.toml $HOME/.starship/starship.toml
-```
-
 ## 環境変数
 Docs: https://starship.rs/ja-JP/config/#config-file-location
 ```bash
@@ -21,11 +16,9 @@ export STARSHIP_CACHE="$HOME/.starship/cache"
 ## Font
 Docs: https://www.nerdfonts.com/font-downloads
 ```bash
-brew tap homebrew/cask-fonts &&
 brew install --cask font-hack-nerd-font
 ```
-VS CodeやWarpのフォントを`Hack Nerd Font`に設定。  
-Warpは「View all available system fonts」にチェックを入れないとこのフォントは選択できません。  
+VS Codeなどのターミナル表示に使うフォントを`Hack Nerd Font`に設定。  
 それ以外のフォントにする際はアイコンが文字化けしないものを選択してください。
 
 ## 参考
