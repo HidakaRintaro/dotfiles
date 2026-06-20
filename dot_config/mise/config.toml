@@ -15,5 +15,6 @@ yarn = "1"
 php = "vfox:mise-plugins/vfox-php"
 
 [settings]
+minimum_release_age = "7d"
 disable_backends = ["asdf"]
 idiomatic_version_file_enable_tools = ["go", "node", "npm", "php", "pnpm", "python", "yarn"]
