@@ -40,6 +40,7 @@ brew "bzip2"
 ## cask
 ##
 cask "1password"
+cask "claude-code"
 cask "deepl"
 cask "discord"
 cask "firefox"
