@@ -1,0 +1,40 @@
+#!/bin/sh
+set -eu
+
+# mise config checksum: {{ include "dot_config/mise/config.toml.tmpl" | sha256sum }}
+
+if command -v mise >/dev/null 2>&1; then
+  MISE=mise
+elif [ -x "$HOME/.local/bin/mise" ]; then
+  MISE="$HOME/.local/bin/mise"
+else
+  echo "miseがインストールされていないため、mise管理ツールのインストールをスキップします。"
+  exit 0
+fi
+
+# Homebrew環境変数を読み込む。
+# HOMEBREW_PREFIXが未設定だと、vfox-php等のソースビルドが既定値/opt/homebrewを参照し、
+# Intel Mac(/usr/local)のbison等をPATHに入れられずビルドが失敗するため、ここで明示的に読み込む。
+if command -v brew >/dev/null 2>&1; then
+  eval "$(brew shellenv)"
+  # bison/re2cはkeg-onlyでPATHに出ない。PHPのソースビルドではconfigureだけでなく
+  # makeのパーサ再生成でも新しいbison(>=3.0)が必要だが、vfox-phpプラグインはmakeに
+  # PATHを引き継がない。macOS標準のbison(2.3)が使われて失敗するため、ここで前置きする。
+  for keg in bison re2c; do
+    kegbin="$(brew --prefix "$keg" 2>/dev/null)/bin"
+    [ -d "$kegbin" ] && PATH="$kegbin:$PATH"
+  done
+  export PATH
+fi
+
+# vfox-phpプラグインのmacOS用configureは--with-openssl/--with-zipを
+# 付与しないバグがあり(configure_linuxにはあるがconfigure_macosには無い)、 openssl拡張が無効になる。
+# その結果https経由のPEAR取得やComposerインストールが失敗する。
+# openssl@3/libzipのpkgconfigはPKG_CONFIG_PATHに通っているので、フラグを明示追加。
+# あわせて非推奨のPEAR(https phar取得で失敗しやすい)を無効化する。
+export PHP_EXTRA_CONFIGURE_OPTIONS="--without-pear --with-openssl --with-zip"
+
+echo "miseで管理するツールをインストールしています..."
+"$MISE" trust "$HOME/.config/mise/config.toml"
+"$MISE" install --yes
+echo "miseで管理するツールのインストールが完了しました。"

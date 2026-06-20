@@ -1,0 +1,30 @@
+{{- /*
+  chezmoi apply時に .chezmoi.arch でHomebrewのprefixを確定する。
+  Apple Silicon=/opt/homebrew、Intel=/usr/local を選び、各パスに焼き込む。
+*/ -}}
+{{- $brewPrefix := eq .chezmoi.arch "arm64" | ternary "/opt/homebrew" "/usr/local" -}}
+# homebrewでインストールしたパッケージのpathを通す設定
+
+# Homebrew本体を初期化する
+eval "$({{ $brewPrefix }}/bin/brew shellenv)"
+
+# coreutils (GNUのやつ)
+export PATH="{{ $brewPrefix }}/opt/coreutils/libexec/gnubin:$PATH"
+
+# make (gmake)
+export PATH="{{ $brewPrefix }}/opt/make/libexec/gnubin:$PATH"
+
+# sed (gsed)
+export PATH="{{ $brewPrefix }}/opt/gnu-sed/libexec/gnubin:$PATH"
+
+# curl (gcurl)
+export PATH="{{ $brewPrefix }}/opt/curl/bin:$PATH"
+
+# grep (ggrep)
+export PATH="{{ $brewPrefix }}/opt/grep/libexec/gnubin:$PATH"
+
+# PHPに必要なライブラリ群
+export PATH="{{ $brewPrefix }}/opt/bison/bin:$PATH"
+export PATH="{{ $brewPrefix }}/opt/libxml2/bin:$PATH"
+export PATH="{{ $brewPrefix }}/opt/jpeg/bin:$PATH"
+export PATH="{{ $brewPrefix }}/opt/bzip2/bin:$PATH"

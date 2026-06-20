@@ -1,0 +1,23 @@
+[tools]
+aws = "latest"
+go = "latest"
+jq = "latest"
+node = "latest"
+npm = "latest"
+php = "latest"
+pinact = "latest"
+pnpm = "latest"
+python = "latest"
+terraform = "latest"
+yarn = "1"
+
+[tool_alias]
+php = "vfox:mise-plugins/vfox-php"
+{{ if ne .chezmoi.arch "arm64" -}}
+pnpm = "npm:pnpm"
+{{ end -}}
+
+[settings]
+minimum_release_age = "7d"
+disable_backends = ["asdf"]
+idiomatic_version_file_enable_tools = ["go", "node", "npm", "php", "pnpm", "python", "yarn"]

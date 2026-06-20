@@ -14,8 +14,5 @@ eval "$(starship init zsh)"
 autoload -Uz compinit && compinit  # 補完機能を有効にする
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'  # 小文字でも大文字ディレクトリ、ファイルを補完できるようにする
 
-# Claude
-export PATH="$HOME/.claude/local:$PATH"
-
-# pnpmの使用を許可
-export VOLTA_FEATURE_PNPM=1
+# mise
+eval "$(mise activate zsh)"
