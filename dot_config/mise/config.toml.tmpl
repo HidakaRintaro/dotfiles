@@ -6,8 +6,12 @@ node = "latest"
 npm = "latest"
 php = "latest"
 pinact = "latest"
-# aqua:pnpm/pnpm はdarwin/amd64(Intel mac)非対応のため、npmバックエンドを明示する。
+{{ if eq .chezmoi.arch "arm64" -}}
+pnpm = "latest"
+{{ else -}}
+# aqua:pnpm/pnpm はdarwin/amd64(Intel mac)非対応のため、Intelではnpmバックエンドを使う。
 "npm:pnpm" = "latest"
+{{ end -}}
 python = "latest"
 terraform = "latest"
 yarn = "1"
