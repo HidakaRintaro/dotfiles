@@ -16,6 +16,25 @@ brew "starship"
 brew "vim"
 brew "webp"
 
+# PHPに必要なもの
+brew "autoconf"
+brew "bison"
+brew "re2c"
+brew "pkg-config"
+brew "libxml2"
+brew "openssl@3"
+brew "icu4c"
+brew "zlib"
+brew "libzip"
+brew "oniguruma"
+brew "freetype"
+brew "jpeg"
+brew "libpng"
+brew "gmp"
+brew "libsodium"
+brew "readline"
+brew "bzip2"
+
 
 ##
 ## cask
@@ -38,6 +57,5 @@ cask "font-hack-nerd-font"
 ## mas
 ##
 if OS.mac?  # macの時のみ実行
-  mas "RunCat",               id: 1429033973
-  mas "Skitch",               id: 425955336
+  mas "Skitch", id: 425955336
 end

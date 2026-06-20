@@ -2,8 +2,8 @@
 export STARSHIP_CONFIG="$HOME/.starship/starship.toml"
 export STARSHIP_CACHE="$HOME/.starship/cache"
 
-# Go
-export PATH="$HOME/go/bin:$PATH"
-
 # gpg
 export GPG_TTY=$(tty)
+
+# Claude
+export PATH="$HOME/.claude/local:$PATH"

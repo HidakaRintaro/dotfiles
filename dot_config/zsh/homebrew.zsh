@@ -14,3 +14,9 @@ export PATH="/opt/homebrew/opt/curl/bin:$PATH"
 
 # grep (ggrep)
 export PATH="/opt/homebrew/opt/grep/libexec/gnubin:$PATH"
+
+# PHPに必要なライブラリ群
+export PATH="/usr/local/opt/bison/bin:$PATH"
+export PATH="/usr/local/opt/libxml2/bin:$PATH"
+export PATH="/usr/local/opt/jpeg/bin:$PATH"
+export PATH="/usr/local/opt/bzip2/bin:$PATH"

@@ -1,11 +1,19 @@
 [tools]
-go = "1.26"
-node = "24"
-npm = "11.4.1"
+aws = "latest"
+go = "latest"
+jq = "latest"
+node = "latest"
+npm = "latest"
 php = "latest"
+pinact = "latest"
 pnpm = "latest"
+python = "latest"
+terraform = "latest"
 yarn = "1"
+
+[tool_alias]
+php = "vfox:mise-plugins/vfox-php"
 
 [settings]
 disable_backends = ["asdf"]
-idiomatic_version_file_enable_tools = ["go", "node", "npm", "php", "pnpm", "yarn"]
+idiomatic_version_file_enable_tools = ["go", "node", "npm", "php", "pnpm", "python", "yarn"]

@@ -14,12 +14,5 @@ eval "$(starship init zsh)"
 autoload -Uz compinit && compinit  # 補完機能を有効にする
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'  # 小文字でも大文字ディレクトリ、ファイルを補完できるようにする
 
-# Claude
-export PATH="$HOME/.claude/local:$PATH"
-
-# Load mise
-if command -v mise >/dev/null 2>&1; then
-  eval "$(mise activate zsh)"
-elif [[ -x "$HOME/.local/bin/mise" ]]; then
-  eval "$("$HOME/.local/bin/mise" activate zsh)"
-fi
+# mise
+eval "$(mise activate zsh)"
