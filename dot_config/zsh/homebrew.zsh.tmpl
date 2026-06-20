@@ -1,7 +1,6 @@
 {{- /*
   chezmoi apply時に .chezmoi.arch でHomebrewのprefixを確定する。
   Apple Silicon=/opt/homebrew、Intel=/usr/local を選び、各パスに焼き込む。
-  このコメントと分岐ロジックは生成物には残らず、解決済みの絶対パスだけが入る。
 */ -}}
 {{- $brewPrefix := eq .chezmoi.arch "arm64" | ternary "/opt/homebrew" "/usr/local" -}}
 # homebrewでインストールしたパッケージのpathを通す設定
