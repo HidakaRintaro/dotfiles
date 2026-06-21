@@ -1,6 +1,6 @@
 [user]
-	name  = HidakaRintaro
-	email = 53255166+HidakaRintaro@users.noreply.github.com
+	name  = {{ .github_username }}
+	email = {{ .github_email }} 
 	signingkey = 38B20DFB72BB2BF0
 
 [alias]
@@ -22,3 +22,9 @@
 
 [commit]
 	gpgsign = true
+
+[url "git@github.com:"]
+	insteadOf = git://github.com/
+	insteadOf = https://github.com/
+[url "git@gist.github.com:"]
+	pushInsteadOf = https://gist.github.com/
