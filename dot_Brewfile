@@ -1,6 +1,7 @@
 ##
 ## brew
 ##
+brew "ccusage"
 brew "coreutils"
 brew "curl"
 brew "gh"
@@ -11,6 +12,7 @@ brew "gnu-sed"
 brew "grep"
 brew "jnv"
 brew "make"
+brew "mas"
 brew "mise"
 brew "neovim"
 brew "starship"

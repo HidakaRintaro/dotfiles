@@ -18,7 +18,7 @@
   },
   "statusLine": {
     "type": "command",
-    "command": ""
+    "command": "~/.claude/statusline.sh"
   },
   "enabledPlugins": {
     "github@claude-plugins-official": true,
