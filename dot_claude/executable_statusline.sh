@@ -2,12 +2,12 @@
 # Claude Code statusline - chezmoi 管理
 #
 # 表示レイアウト:
-#   行1: [フォルダ] ディレクトリ [| [GitHub] owner/repo] | [ブランチ] ブランチ名 ... | [フォーク] #PR番号 | [ツリー] worktree名
-#   行2: [ロボット] モデル | [ゲージ] effort | ● ステータス | [マネー] コスト
-#   行3: ctx [バー] % | [時計] 5h [バー] % HH:MM | [カレンダー] 7d [バー] % M/D HH:MM
+#   行1: [フォルダ] ディレクトリ [| [GitHub] owner/repo] | [ブランチ] ブランチ名 コンフリクト +staged ~unstaged ?untracked ⇡ahead⇣behind | PR #番号 | [ツリー] worktree名
+#   行2: [ロボット] モデル | [ゲージ] effort | [ステータス] OK/DEGRADED/DOWN | [円] 金額(session) | [円] 金額(daily) | [円] 金額(weekly)
+#   行3: ctx ○% | [時計] 5h [バー] % HH:MM | [カレンダー] 7d [バー] % M/D HH:MM
 #
-# 外部API・ccusage の取得部はコメントアウト済み。
-# 有効化するときは各「有効化時:」コメントを参照。
+# 為替レート(frankfurter.dev)の取得部はコメントアウト済み。
+# 有効化するときは usd_jpy_rate 関数のコメントを参照。
 
 # mise の PATH を補完（mise シェル外から起動された場合に bun/ccusage を解決するため）
 [ -n "$MISE_SHELL" ] || export PATH="$HOME/.local/share/mise/shims:$PATH"
@@ -52,21 +52,20 @@ C_ACCENT=$'\033[38;2;198;120;221m'  # #C678DD 紫  - 強調 (ブランチ名)
 SEP="${DIM} | ${RST}"
 
 # ── Nerd Font アイコン (Hack Nerd Font, raw UTF-8 バイト列) ───────────────────
-I_DIR=$'\xef\x81\xbb'        # nf-fa-folder       U+F07B
-I_BRANCH=$'\xee\x9c\xa5'     # nf-dev-git_branch  U+E725
-I_WT=$'\xf3\xb0\x99\x85'     # nf-md-file_tree    U+F0645
-I_MODEL=$'\xf3\xb0\x9a\xa9'  # nf-md-robot        U+F06A9
-I_EFFORT=$'\xef\x83\xa4'     # nf-fa-tachometer   U+F0E4
-I_5H=$'\xef\x80\x97'         # nf-fa-clock_o      U+F017
-I_7D=$'\xef\x81\xb3'         # nf-fa-calendar     U+F073
-I_COST=$'\xef\x85\x97'       # nf-fa-yen          U+F157
-I_PR=$'\xef\x84\xa6'         # nf-fa-code_fork    U+F126
-I_CONFLICT=$'\xef\x81\xb1'   # nf-fa-warning      U+F071
+I_DIR=$'\xef\x81\xbb'        # nf-fa-folder        U+F07B
+I_BRANCH=$'\xf3\xb0\x98\xac' # nf-md-source_branch U+F062C
+I_WT=$'\xf3\xb0\x99\x85'     # nf-md-file_tree     U+F0645
+I_MODEL=$'\xf3\xb0\x9a\xa9'  # nf-md-robot         U+F06A9
+I_EFFORT=$'\xef\x83\xa4'     # nf-fa-tachometer    U+F0E4
+I_5H=$'\xef\x80\x97'         # nf-fa-clock_o       U+F017
+I_7D=$'\xef\x81\xb3'         # nf-fa-calendar      U+F073
+I_COST=$'\xef\x85\x97'       # nf-fa-yen           U+F157
+I_CONFLICT=$'\xef\x81\xb1'   # nf-fa-warning       U+F071
 I_STATUS_OK=$'\xf3\xb0\x97\xa1'   # nf-md-check_circle_outline U+F05E1
 I_STATUS_WARN=$'\xf3\xb0\x97\x96' # nf-md-alert_circle_outline U+F05D6
 I_STATUS_DOWN=$'\xf3\xb0\x85\x9a' # nf-md-close_circle_outline U+F015A
-I_RETRY=$'\xef\x80\xa1'      # nf-fa-refresh      U+F021
-I_GITHUB=$'\xee\x9c\x89'     # nf-dev-github      U+E709
+I_RETRY=$'\xef\x80\xa1'      # nf-fa-refresh       U+F021
+I_GITHUB=$'\xee\x9c\x89'     # nf-dev-github       U+E709
 
 # ── キャッシュ設定 ─────────────────────────────────────────────────────────────
 CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/claude-statusline"
@@ -287,9 +286,9 @@ fi
 # PR 番号（URL がある場合は OSC 8 でクリッカブルリンクにする）
 if [ -n "$pr_num" ] && [ "$pr_num" != "0" ]; then
   if [ -n "$pr_url" ]; then
-    pr_seg="${I_PR} $(printf '\033]8;;%s\a#%s\033]8;;\a' "$pr_url" "$pr_num")"
+    pr_seg="$(printf '\033]8;;%s\aPR #%s\033]8;;\a' "$pr_url" "$pr_num")"
   else
-    pr_seg="${I_PR} #${pr_num}"
+    pr_seg="PR #${pr_num}"
   fi
   line1+="${SEP}${pr_seg}"
 fi
@@ -298,7 +297,7 @@ fi
 
 printf '%s\n' "$line1"
 
-# ── 行2: モデル | effort |  ステータス | コスト ─────────────────────────────
+# ── 行2: モデル | effort | ステータス | コスト ──────────────────────────────
 line2="${I_MODEL} ${model}"
 
 [ -n "$effort" ] && line2+="${SEP}${I_EFFORT} ${effort}"
@@ -322,10 +321,10 @@ weekly=$(fmt_jpy "$(weekly_cost)")
 
 printf '%s\n' "$line2"
 
-# ── 行3: コンテキストバー | 5時間レートバー | 7日間レートバー ─────────────────
+# ── 行3: ctx リングメーター | 5時間レートバー | 7日間レートバー ───────────────
 line3=""
 
-# コンテキスト使用率バー
+# コンテキスト使用率 (Ring Meter)
 if [ -n "$ctx_pct" ]; then
   ctx_int=${ctx_pct%%.*}
   line3+="ctx $(ring_meter "$ctx_int") ${ctx_int}%"
