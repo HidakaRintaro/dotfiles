@@ -5,9 +5,6 @@
 #   行1: [フォルダ] ディレクトリ [| [GitHub] owner/repo] | [ブランチ] ブランチ名 コンフリクト +staged ~unstaged ?untracked ⇡ahead⇣behind | PR #番号 | [ツリー] worktree名
 #   行2: [ロボット] モデル | [ゲージ] effort | [ステータス] OK/DEGRADED/DOWN | [円] 金額(session) | [円] 金額(daily) | [円] 金額(weekly)
 #   行3: ctx ○% | [時計] 5h [バー] % HH:MM | [カレンダー] 7d [バー] % M/D HH:MM
-#
-# 為替レート(frankfurter.dev)の取得部はコメントアウト済み。
-# 有効化するときは usd_jpy_rate 関数のコメントを参照。
 
 # mise の PATH を補完（mise シェル外から起動された場合に bun/ccusage を解決するため）
 [ -n "$MISE_SHELL" ] || export PATH="$HOME/.local/share/mise/shims:/usr/local/bin:$PATH"
@@ -158,6 +155,8 @@ usd_jpy_rate() {
   cat "$cache" 2>/dev/null
 }
 JPY_RATE=$(usd_jpy_rate)
+# キャッシュ未作成・API 失敗・curl 未インストール時は固定レートで代替
+JPY_RATE=${JPY_RATE:-155}
 
 # USD を円換算してカンマ区切りで出力（例: ¥1,204）
 fmt_jpy() {
