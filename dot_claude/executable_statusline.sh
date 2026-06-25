@@ -10,7 +10,7 @@
 # 有効化するときは usd_jpy_rate 関数のコメントを参照。
 
 # mise の PATH を補完（mise シェル外から起動された場合に bun/ccusage を解決するため）
-[ -n "$MISE_SHELL" ] || export PATH="$HOME/.local/share/mise/shims:$PATH"
+[ -n "$MISE_SHELL" ] || export PATH="$HOME/.local/share/mise/shims:/usr/local/bin:$PATH"
 
 input=$(cat)
 
