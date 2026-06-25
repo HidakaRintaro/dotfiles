@@ -43,11 +43,13 @@ IFS=$'\x1f' read -r model effort cwd project wt \
 # セマンティックな役割で定義し、用途ごとに使い分ける
 RST=$'\033[0m'
 DIM=$'\033[2m'
-C_OK=$'\033[38;2;78;201;148m'       # #4EC994 緑  - 正常 (staged)
-C_WARN=$'\033[38;2;226;181;106m'    # #E2B56A 黄  - 警告 (unstaged)
-C_DANGER=$'\033[38;2;224;108;117m'  # #E06C75 赤  - 危険 (コンフリクト)
-C_INFO=$'\033[38;2;97;175;239m'     # #61AFEF 青  - 情報 (ディレクトリ, ahead/behind)
-C_ACCENT=$'\033[38;2;198;120;221m'  # #C678DD 紫  - 強調 (ブランチ名)
+C_TEXT=$'\033[38;2;171;178;191m'    # #ABB2BF    - 基本テキスト (モデル, コスト金額, %)
+C_SUB=$'\033[38;2;130;137;151m'     # #828997    - 補助テキスト (ラベル, リセット時刻, 未追跡)
+C_OK=$'\033[38;2;78;201;148m'       # #4EC994 緑 - 正常 (staged)
+C_WARN=$'\033[38;2;226;181;106m'    # #E2B56A 黄 - 警告 (unstaged)
+C_DANGER=$'\033[38;2;224;108;117m'  # #E06C75 赤 - 危険 (コンフリクト)
+C_INFO=$'\033[38;2;97;175;239m'     # #61AFEF 青 - 情報 (ディレクトリ, ahead/behind)
+C_ACCENT=$'\033[38;2;198;120;221m'  # #C678DD 紫 - 強調 (ブランチ名)
 
 SEP="${DIM} | ${RST}"
 
@@ -275,7 +277,7 @@ if [ -n "$git_branch" ]; then
   [ "${git_conflicts:-0}" -gt 0 ] && git_seg+=" ${C_DANGER}${I_CONFLICT}${git_conflicts}${RST}"
   [ "${git_staged:-0}"    -gt 0 ] && git_seg+=" ${C_OK}+${git_staged}${RST}"
   [ "${git_unstaged:-0}"  -gt 0 ] && git_seg+=" ${C_WARN}~${git_unstaged}${RST}"
-  [ "${git_untracked:-0}" -gt 0 ] && git_seg+=" ${DIM}?${git_untracked}${RST}"
+  [ "${git_untracked:-0}" -gt 0 ] && git_seg+=" ${C_SUB}?${git_untracked}${RST}"
   [ "${git_ahead:-0}"     -gt 0 ] && git_seg+=" ${C_INFO}⇡${git_ahead}${RST}"
   [ "${git_behind:-0}"    -gt 0 ] && git_seg+=" ${C_INFO}⇣${git_behind}${RST}"
   line1+="${SEP}${git_seg}"
@@ -296,9 +298,9 @@ fi
 printf '%s\n' "$line1"
 
 # ── 行2: モデル | effort | ステータス | コスト ──────────────────────────────
-line2="${I_MODEL} ${model}"
+line2="${I_MODEL} ${C_TEXT}${model}${RST}"
 
-[ -n "$effort" ] && line2+="${SEP}${I_EFFORT} ${effort}"
+[ -n "$effort" ] && line2+="${SEP}${I_EFFORT} ${C_TEXT}${effort}${RST}"
 
 # Claude サービスステータス
 # 有効化時: status.claude.com API を実装し、状態に応じて
@@ -307,15 +309,15 @@ line2+="${SEP}${C_OK}$(printf '\033]8;;https://status.claude.com\a%s OK\033]8;;\
 
 # セッションコスト（JSON から取得、固定レートで円換算）
 session_cost=$(fmt_jpy "$cost_usd")
-[ -n "$session_cost" ] && line2+="${SEP}${I_COST}${session_cost}${DIM}(session)${RST}"
+[ -n "$session_cost" ] && line2+="${SEP}${I_COST}${C_TEXT}${session_cost}${RST}${C_SUB}(session)${RST}"
 
 # 1日のコスト
 daily=$(fmt_jpy "$(daily_cost)")
-[ -n "$daily" ] && line2+="${SEP}${I_COST}${daily}${DIM}(daily)${RST}"
+[ -n "$daily" ] && line2+="${SEP}${I_COST}${C_TEXT}${daily}${RST}${C_SUB}(daily)${RST}"
 
 # 7日間のコスト
 weekly=$(fmt_jpy "$(weekly_cost)")
-[ -n "$weekly" ] && line2+="${SEP}${I_COST}${weekly}${DIM}(weekly)${RST}"
+[ -n "$weekly" ] && line2+="${SEP}${I_COST}${C_TEXT}${weekly}${RST}${C_SUB}(weekly)${RST}"
 
 printf '%s\n' "$line2"
 
@@ -325,15 +327,15 @@ line3=""
 # コンテキスト使用率 (Ring Meter)
 if [ -n "$ctx_pct" ]; then
   ctx_int=${ctx_pct%%.*}
-  line3+="ctx $(ring_meter "$ctx_int") ${ctx_int}%"
+  line3+="ctx $(ring_meter "$ctx_int") ${C_TEXT}${ctx_int}%${RST}"
 fi
 
 # 5時間レート制限バー
 if [ -n "$fh_pct" ]; then
   fh_int=${fh_pct%%.*}
-  seg="${I_5H} 5h $(progress_bar "$fh_int" 10) ${fh_int}%"
+  seg="${I_5H} 5h $(progress_bar "$fh_int" 10) ${C_TEXT}${fh_int}%${RST}"
   if [ -n "$fh_reset" ] && [ "$fh_reset" != "0" ]; then
-    seg+=" ${DIM}${I_RETRY}$(fmt_epoch_jst "$fh_reset" '%H:%M')${RST}"
+    seg+=" ${C_SUB}${I_RETRY}$(fmt_epoch_jst "$fh_reset" '%H:%M')${RST}"
   fi
   line3+="${SEP}${seg}"
 fi
@@ -341,9 +343,9 @@ fi
 # 7日間レート制限バー
 if [ -n "$sd_pct" ]; then
   sd_int=${sd_pct%%.*}
-  seg="${I_7D} 7d $(progress_bar "$sd_int" 10) ${sd_int}%"
+  seg="${I_7D} 7d $(progress_bar "$sd_int" 10) ${C_TEXT}${sd_int}%${RST}"
   if [ -n "$sd_reset" ] && [ "$sd_reset" != "0" ]; then
-    seg+=" ${DIM}${I_RETRY}$(fmt_epoch_jst "$sd_reset" '%m/%d %H:%M')${RST}"
+    seg+=" ${C_SUB}${I_RETRY}$(fmt_epoch_jst "$sd_reset" '%m/%d %H:%M')${RST}"
   fi
   line3+="${SEP}${seg}"
 fi
