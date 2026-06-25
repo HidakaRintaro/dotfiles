@@ -43,7 +43,7 @@ IFS=$'\x1f' read -r model effort cwd project wt \
 # セマンティックな役割で定義し、用途ごとに使い分ける
 RST=$'\033[0m'
 DIM=$'\033[2m'
-C_OK=$'\033[38;2;78;201;148m'       # #4EC994 緑  - 正常 (staged, ● OK)
+C_OK=$'\033[38;2;78;201;148m'       # #4EC994 緑  - 正常 (staged)
 C_WARN=$'\033[38;2;226;181;106m'    # #E2B56A 黄  - 警告 (unstaged)
 C_DANGER=$'\033[38;2;224;108;117m'  # #E06C75 赤  - 危険 (コンフリクト)
 C_INFO=$'\033[38;2;97;175;239m'     # #61AFEF 青  - 情報 (ディレクトリ, ahead/behind)
@@ -52,20 +52,20 @@ C_ACCENT=$'\033[38;2;198;120;221m'  # #C678DD 紫  - 強調 (ブランチ名)
 SEP="${DIM} | ${RST}"
 
 # ── Nerd Font アイコン (Hack Nerd Font, raw UTF-8 バイト列) ───────────────────
-I_DIR=$'\xef\x81\xbb'        # nf-fa-folder        U+F07B
-I_BRANCH=$'\xf3\xb0\x98\xac' # nf-md-source_branch U+F062C
-I_WT=$'\xf3\xb0\x99\x85'     # nf-md-file_tree     U+F0645
-I_MODEL=$'\xf3\xb0\x9a\xa9'  # nf-md-robot         U+F06A9
-I_EFFORT=$'\xef\x83\xa4'     # nf-fa-tachometer    U+F0E4
-I_5H=$'\xef\x80\x97'         # nf-fa-clock_o       U+F017
-I_7D=$'\xef\x81\xb3'         # nf-fa-calendar      U+F073
-I_COST=$'\xef\x85\x97'       # nf-fa-yen           U+F157
-I_CONFLICT=$'\xef\x81\xb1'   # nf-fa-warning       U+F071
+I_DIR=$'\xef\x81\xbb'             # nf-fa-folder               U+F07B
+I_BRANCH=$'\xf3\xb0\x98\xac'      # nf-md-source_branch        U+F062C
+I_WT=$'\xf3\xb0\x99\x85'          # nf-md-file_tree            U+F0645
+I_MODEL=$'\xf3\xb0\x9a\xa9'       # nf-md-robot                U+F06A9
+I_EFFORT=$'\xef\x83\xa4'          # nf-fa-tachometer           U+F0E4
+I_5H=$'\xef\x80\x97'              # nf-fa-clock_o              U+F017
+I_7D=$'\xef\x81\xb3'              # nf-fa-calendar             U+F073
+I_COST=$'\xef\x85\x97'            # nf-fa-yen                  U+F157
+I_CONFLICT=$'\xef\x81\xb1'        # nf-fa-warning              U+F071
 I_STATUS_OK=$'\xf3\xb0\x97\xa1'   # nf-md-check_circle_outline U+F05E1
 I_STATUS_WARN=$'\xf3\xb0\x97\x96' # nf-md-alert_circle_outline U+F05D6
 I_STATUS_DOWN=$'\xf3\xb0\x85\x9a' # nf-md-close_circle_outline U+F015A
-I_RETRY=$'\xef\x80\xa1'      # nf-fa-refresh       U+F021
-I_GITHUB=$'\xee\x9c\x89'     # nf-dev-github       U+E709
+I_RETRY=$'\xef\x80\xa1'           # nf-fa-refresh              U+F021
+I_GITHUB=$'\xee\x9c\x89'          # nf-dev-github              U+E709
 
 # ── キャッシュ設定 ─────────────────────────────────────────────────────────────
 CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/claude-statusline"
@@ -99,7 +99,7 @@ ring_meter() {
   # 3段階: ~60% 緑、~80% 黄、81%~ 赤
   if   [ "$pct" -le 60 ]; then color="$C_OK"
   elif [ "$pct" -le 80 ]; then color="$C_WARN"
-  else                          color="$C_DANGER"
+  else                         color="$C_DANGER"
   fi
 
   printf '%s%s%s' "$color" "${RINGS[$idx]}" "$RST"
@@ -124,7 +124,7 @@ progress_bar() {
   # 3段階: ~60% 緑、~80% 黄、81%~ 赤
   if   [ "$pct" -le 60 ]; then color="$C_OK"
   elif [ "$pct" -le 80 ]; then color="$C_WARN"
-  else                          color="$C_DANGER"
+  else                         color="$C_DANGER"
   fi
 
   bar=""
@@ -139,25 +139,23 @@ progress_bar() {
 }
 
 # ── 為替レート (USD→JPY) ──────────────────────────────────────────────────────
-# 有効化時: 下記関数のコメントアウトを外し、JPY_RATE=160 の行を削除する
 # frankfurter.dev API を使用（日次キャッシュ、24時間 TTL）
-#
-# usd_jpy_rate() {
-#   local cache="$CACHE_DIR/usdjpy"
-#   local now mtime
-#   now=$(date +%s)
-#   mtime=$(file_mtime "$cache")
-#   if [ $((now - mtime)) -gt 86400 ]; then
-#     touch "$cache"
-#     (curl -s --max-time 3 \
-#       "https://api.frankfurter.dev/v1/latest?base=USD&symbols=JPY" 2>/dev/null |
-#       jq -r '.rates.JPY // empty' >"$cache.tmp" \
-#       && [ -s "$cache.tmp" ] && mv "$cache.tmp" "$cache") &
-#   fi
-#   cat "$cache" 2>/dev/null
-# }
-# JPY_RATE=$(usd_jpy_rate)
-JPY_RATE=160  # 固定値（有効化時は上記関数に置き換える）
+
+usd_jpy_rate() {
+  local cache="$CACHE_DIR/usdjpy"
+  local now mtime
+  now=$(date +%s)
+  mtime=$(file_mtime "$cache")
+  if [ $((now - mtime)) -gt 86400 ]; then
+    touch "$cache"
+    (curl -s --max-time 3 \
+      "https://api.frankfurter.dev/v1/latest?base=USD&symbols=JPY" 2>/dev/null |
+      jq -r '.rates.JPY // empty' >"$cache.tmp" \
+      && [ -s "$cache.tmp" ] && mv "$cache.tmp" "$cache") &
+  fi
+  cat "$cache" 2>/dev/null
+}
+JPY_RATE=$(usd_jpy_rate)
 
 # USD を円換算してカンマ区切りで出力（例: ¥1,204）
 fmt_jpy() {
@@ -216,9 +214,9 @@ if [ $((now_ts - git_mtime)) -gt 5 ]; then
     # grep -c はマッチゼロでも stdout に "0" を出して exit 1 を返すため
     # `|| echo 0` と組み合わせると "0\n0" になりキャッシュに \n が埋め込まれる
     conflicts=$(echo "$git_out" | grep -cE '^(UU|AA|DD|AU|UA|DU|UD)' 2>/dev/null); conflicts=${conflicts:-0}
-    staged=$(echo "$git_out"    | grep -cE '^[MADRCT]'                2>/dev/null); staged=${staged:-0}
-    unstaged=$(echo "$git_out"  | grep -cE '^.[MDRCT]'                2>/dev/null); unstaged=${unstaged:-0}
-    untracked=$(echo "$git_out" | grep -c  '^??'                      2>/dev/null); untracked=${untracked:-0}
+    staged=$(echo "$git_out"    | grep -cE '^[MADRCT]'               2>/dev/null); staged=${staged:-0}
+    unstaged=$(echo "$git_out"  | grep -cE '^.[MDRCT]'               2>/dev/null); unstaged=${unstaged:-0}
+    untracked=$(echo "$git_out" | grep -c  '^??'                     2>/dev/null); untracked=${untracked:-0}
 
     # upstream との ahead/behind コミット数
     read -r behind ahead < <(
