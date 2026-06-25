@@ -14,12 +14,3 @@
 ```bash
 sh -c "$(curl -fsLS https://get.chezmoi.io)" -- init --apply https://github.com/HidakaRintaro/dotfiles.git
 ```
-
-## Tools
-
-Node.js、npm、yarn、pnpm、PHP、Goはmiseで管理する。
-
-```bash
-mise install
-mise ls
-```
