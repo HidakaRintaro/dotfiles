@@ -43,8 +43,8 @@ IFS=$'\x1f' read -r model effort cwd project wt \
 # セマンティックな役割で定義し、用途ごとに使い分ける
 RST=$'\033[0m'
 DIM=$'\033[2m'
-C_TEXT=$'\033[38;2;171;178;191m'    # #ABB2BF    - 基本テキスト (モデル, コスト金額, %)
-C_SUB=$'\033[38;2;130;137;151m'     # #828997    - 補助テキスト (ラベル, リセット時刻, 未追跡)
+C_TEXT=$'\033[38;2;204;204;204m'    # #CCCCCC    - 基本テキスト (Ghostty Dark Modern foreground)
+C_SUB=$'\033[38;2;171;178;191m'     # #ABB2BF    - 補助テキスト (ラベル, リセット時刻, 未追跡)
 C_OK=$'\033[38;2;78;201;148m'       # #4EC994 緑 - 正常 (staged)
 C_WARN=$'\033[38;2;226;181;106m'    # #E2B56A 黄 - 警告 (unstaged)
 C_DANGER=$'\033[38;2;224;108;117m'  # #E06C75 赤 - 危険 (コンフリクト)
@@ -153,7 +153,7 @@ usd_jpy_rate() {
     (curl -s --max-time 3 \
       "https://api.frankfurter.dev/v1/latest?base=USD&symbols=JPY" 2>/dev/null |
       jq -r '.rates.JPY // empty' >"$cache.tmp" \
-      && [ -s "$cache.tmp" ] && mv "$cache.tmp" "$cache") &
+      && [ -s "$cache.tmp" ] && mv -f "$cache.tmp" "$cache") &
   fi
   cat "$cache" 2>/dev/null
 }
@@ -165,36 +165,37 @@ fmt_jpy() {
   [ -z "$usd" ] && return
   local jpy
   jpy=$(awk -v u="$usd" -v r="$JPY_RATE" 'BEGIN{printf "%d", int(u*r+0.5)}')
-  [ "$jpy" = "0" ] && return
   echo "$(echo "$jpy" | rev | sed 's/[0-9][0-9][0-9]/&,/g' | rev | sed 's/^,//')"
 }
 
-# ── 1日のコスト (ccusage, 5分キャッシュ) ─────────────────────────────────────
+# ── 1日のコスト (ccusage, 1分キャッシュ) ─────────────────────────────────────
 daily_cost() {
   local cache="$CACHE_DIR/daily_$(date +%Y%m%d)"
   local now mtime
   now=$(date +%s)
   mtime=$(file_mtime "$cache")
-  if [ $((now - mtime)) -gt 300 ]; then
+  if [ $((now - mtime)) -gt 60 ]; then
     touch "$cache"
+    find "$CACHE_DIR" -maxdepth 1 -name 'daily_*' ! -name "daily_$(date +%Y%m%d)" -delete 2>/dev/null &
     (ccusage daily --since "$(date +%Y%m%d)" --json 2>/dev/null |
       jq -r '.totals.totalCost // empty' >"$cache.tmp" \
-      && mv "$cache.tmp" "$cache") &
+      && mv -f "$cache.tmp" "$cache") &
   fi
   cat "$cache" 2>/dev/null
 }
 
-# ── 7日間のコスト (ccusage, 5分キャッシュ) ───────────────────────────────────
+# ── 7日間のコスト (ccusage, 1分キャッシュ) ───────────────────────────────────
 weekly_cost() {
   local cache="$CACHE_DIR/weekly_$(date +%Y%m%d)"
   local now mtime
   now=$(date +%s)
   mtime=$(file_mtime "$cache")
-  if [ $((now - mtime)) -gt 300 ]; then
+  if [ $((now - mtime)) -gt 60 ]; then
     touch "$cache"
+    find "$CACHE_DIR" -maxdepth 1 -name 'weekly_*' ! -name "weekly_$(date +%Y%m%d)" -delete 2>/dev/null &
     (ccusage weekly --json 2>/dev/null |
       jq -r '.totals.totalCost // empty' >"$cache.tmp" \
-      && mv "$cache.tmp" "$cache") &
+      && mv -f "$cache.tmp" "$cache") &
   fi
   cat "$cache" 2>/dev/null
 }
@@ -205,6 +206,9 @@ now_ts=$(date +%s)
 git_mtime=$(file_mtime "$GIT_CACHE")
 
 if [ $((now_ts - git_mtime)) -gt 5 ]; then
+  # 初回作成時（新セッション）に他セッションの古いキャッシュを削除
+  [ ! -f "$GIT_CACHE" ] && find "$CACHE_DIR" -maxdepth 1 -name 'git-*' \
+    ! -name "git-${session_id:-nosession}" -delete 2>/dev/null &
   git_dir="${cwd:-$(pwd)}"
   if git -C "$git_dir" --no-optional-locks rev-parse --is-inside-work-tree \
       >/dev/null 2>&1; then
@@ -268,7 +272,7 @@ line1="${I_DIR} ${C_INFO}${dir_display}${RST}"
 if [ -n "$git_remote_slug" ]; then
   expected_path="$HOME/src/github.com/${git_remote_slug}"
   if [ "${project:-$cwd}" != "$expected_path" ]; then
-    line1+="${SEP}${I_GITHUB} $(printf '\033]8;;https://github.com/%s\a%s\033]8;;\a' "$git_remote_slug" "$git_remote_slug")"
+    line1+="${SEP}${I_GITHUB} ${C_TEXT}$(printf '\033]8;;https://github.com/%s\a%s\033]8;;\a' "$git_remote_slug" "$git_remote_slug")${RST}"
   fi
 fi
 
@@ -308,16 +312,24 @@ line2="${I_MODEL} ${C_TEXT}${model}${RST}"
 line2+="${SEP}${C_OK}$(printf '\033]8;;https://status.claude.com\a%s OK\033]8;;\a' "${I_STATUS_OK}")${RST}"
 
 # セッションコスト（JSON から取得、固定レートで円換算）
-session_cost=$(fmt_jpy "$cost_usd")
-[ -n "$session_cost" ] && line2+="${SEP}${I_COST}${C_TEXT}${session_cost}${RST}${C_SUB}(session)${RST}"
+session_cost=$(fmt_jpy "${cost_usd:-0}")
+line2+="${SEP}${I_COST}${C_TEXT}${session_cost}${RST}${C_SUB}(session)${RST}"
 
-# 1日のコスト
-daily=$(fmt_jpy "$(daily_cost)")
-[ -n "$daily" ] && line2+="${SEP}${I_COST}${C_TEXT}${daily}${RST}${C_SUB}(daily)${RST}"
+# 1日のコスト（キャッシュ未取得中は「…」で計算中を示す）
+daily_raw=$(daily_cost)
+if [ -z "$daily_raw" ]; then
+  line2+="${SEP}${I_COST}${C_SUB}…(daily)${RST}"
+else
+  line2+="${SEP}${I_COST}${C_TEXT}$(fmt_jpy "$daily_raw")${RST}${C_SUB}(daily)${RST}"
+fi
 
-# 7日間のコスト
-weekly=$(fmt_jpy "$(weekly_cost)")
-[ -n "$weekly" ] && line2+="${SEP}${I_COST}${C_TEXT}${weekly}${RST}${C_SUB}(weekly)${RST}"
+# 7日間のコスト（キャッシュ未取得中は「…」で計算中を示す）
+weekly_raw=$(weekly_cost)
+if [ -z "$weekly_raw" ]; then
+  line2+="${SEP}${I_COST}${C_SUB}…(weekly)${RST}"
+else
+  line2+="${SEP}${I_COST}${C_TEXT}$(fmt_jpy "$weekly_raw")${RST}${C_SUB}(weekly)${RST}"
+fi
 
 printf '%s\n' "$line2"
 
@@ -325,10 +337,9 @@ printf '%s\n' "$line2"
 line3=""
 
 # コンテキスト使用率 (Ring Meter)
-if [ -n "$ctx_pct" ]; then
-  ctx_int=${ctx_pct%%.*}
-  line3+="ctx $(ring_meter "$ctx_int") ${C_TEXT}${ctx_int}%${RST}"
-fi
+ctx_int=${ctx_pct%%.*}
+ctx_int=${ctx_int:-0}
+line3+="ctx $(ring_meter "$ctx_int") ${C_TEXT}${ctx_int}%${RST}"
 
 # 5時間レート制限バー
 if [ -n "$fh_pct" ]; then
